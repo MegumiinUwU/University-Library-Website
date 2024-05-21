@@ -14,7 +14,7 @@
 </p>
 <div class="books">
     {% for book in page_obj %}
-    <div class="book">
+    <div class="book" onclick="bookDetails('{{ book.name }}')">
         <h2>Title: {{ book.name }}</h2>
         <p>First Author: {{ book.first_author }}</p>
         {% if book.second_author %}
@@ -23,8 +23,6 @@
         {% if book.third_author %}
         <p>Third Author: {{ book.third_author }}</p>
         {% endif %}
-        <p>ISBN: {{ book.isbn }}</p>
-        <p>Publish Year: {{ book.publish_year }}</p>
         <p>Genre: {{ book.genre }}</p>
         <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
     </div>
@@ -59,13 +57,17 @@
     <span class="disabled-pagination-link">Last &raquo;</span>
     {% endif %}
 </div>
+
+<div id="bookModal" class="modal">
+    <div class="modal-content" id="modalContent">
+    </div>
+</div>
 {% endif %}
 
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
 $(document).ready(function() {
     $.ajax({
         url: '/get-random-quote/',
@@ -80,7 +82,74 @@ $(document).ready(function() {
 });
 </script>
 
+<script>
+    
+function bookDetails(name) {
+    const filterParams = new URLSearchParams(window.location.search);
+    const queryParams = filterParams.toString();
+    fetch("/get-book-details/?name=" + encodeURIComponent(name) + "&" + queryParams)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received from server:', data);
+            showModal(data.book);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function showModal(book) {
+    console.clear()
+    console.log(book)
+    const modal = document.getElementById('bookModal');
+    const modalContent = document.getElementById('modalContent');
+
+    // Check if book exists and has necessary properties
+    if (book && book.name) {
+        modalContent.innerHTML = `
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>${book.name}</h2>
+            ${book.cover_image ? `<img src="${book.cover_image}" alt="Book Cover" class="book-image">` : ''}
+            <p><strong>First Author:</strong> ${book.first_author || ''}</p>
+            ${book.second_author ? `<p><strong>Second Author:</strong> ${book.second_author}</p>` : ''}
+            ${book.third_author ? `<p><strong>Third Author:</strong> ${book.third_author}</p>` : ''}
+            <p><strong>ISBN:</strong> ${book.isbn || ''}</p>
+            <p><strong>Publish Year:</strong> ${book.publish_year || ''}</p>
+            <p><strong>Genre:</strong> ${book.genre || ''}</p>
+            <p><strong>Description:</strong> ${book.description || ''}</p>
+        `;
+        modal.style.display = "block";
+    } else {
+        console.error('Book details are incomplete or missing.');
+    }
+}
+
+    function closeModal() {
+        const modal = document.getElementById('bookModal');
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('bookModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+</script>
+
 <style>
+    .book{
+        cursor: pointer; 
+        transition: transform 0.3s ease; 
+    }
+    .book:hover {
+        transform: scale(1.05); 
+    }
     .book-cover, .book-image {
         width: 350px;
         height: 350px;
@@ -161,5 +230,57 @@ $(document).ready(function() {
         font-weight: bold;
         margin-top: 1em;
     }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal h2 {
+    text-align: center;
+    font-size: 24px; /* Example font size */
+    position: relative;
+}
+
+
+
+    .modal-content {
+        background: radial-gradient(circle, #e0e0e0, #9dc9bb);
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .book-image {
+        max-width: 200px;
+        border-radius: 8px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.1); /* Fading shadow */
+}
+
 </style>
 {% endblock content %}

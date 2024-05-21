@@ -15,6 +15,7 @@ import random
 from django.http import JsonResponse
 from .models import Book
 import requests
+from django.shortcuts import get_object_or_404
 
 
 
@@ -109,6 +110,8 @@ def view_books(request):
     else:
         books = Book.objects.all()
 
+    print(books)
+
     # Pagination
     paginator = Paginator(books, 10)  # Show 10 books per page
     page_number = request.GET.get('page')
@@ -159,3 +162,19 @@ def get_random_quote(request):
     data = response.json()
     quote = data['content']
     return JsonResponse({'quote': quote})
+
+def get_book_details(request):
+    name = request.GET.get('name')
+    book = get_object_or_404(Book, name=name)
+    book_data = {
+        'name': book.name,
+        'first_author': book.first_author,
+        'second_author': book.second_author,
+        'third_author': book.third_author,
+        'isbn': book.isbn,
+        'publish_year': book.publish_year,
+        'genre': book.genre,
+        'description': book.description,
+        'cover_image': book.cover_image.url if book.cover_image else None,
+    }
+    return JsonResponse({'book': book_data})

@@ -9,5 +9,5 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('get-random-books/', views.get_random_books, name='get_random_books'),
     path('get-random-quote/', views.get_random_quote, name='get_random_quote'),
-
+    path('get-book-details/', views.get_book_details, name='get_book_details'),
 ]
