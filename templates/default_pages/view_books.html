@@ -1,0 +1,165 @@
+{% extends 'default_pages/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="book-heading">All Books</h1>
+<div class="quote"></div>
+<p>
+    <form method="post" action="{% url 'view_books' %}" class="filter-form">
+        {% csrf_token %}
+        <label for="category">Filter by Genre:</label>
+        <input type="text" name="category" id="category" placeholder="Enter category...">
+        <button type="submit">Filter</button>
+    </form>
+</p>
+<div class="books">
+    {% for book in page_obj %}
+    <div class="book">
+        <h2>Title: {{ book.name }}</h2>
+        <p>First Author: {{ book.first_author }}</p>
+        {% if book.second_author %}
+        <p>Second Author: {{ book.second_author }}</p>
+        {% endif %}
+        {% if book.third_author %}
+        <p>Third Author: {{ book.third_author }}</p>
+        {% endif %}
+        <p>ISBN: {{ book.isbn }}</p>
+        <p>Publish Year: {{ book.publish_year }}</p>
+        <p>Genre: {{ book.genre }}</p>
+        <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
+    </div>
+    {% empty %}
+    <p>No books found.</p>
+    {% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="{{ request.path }}?page=1" class="pagination-link">&laquo; First</a>
+    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}" class="pagination-link">&lt; Previous</a>
+    {% else %}
+    <span class="disabled-pagination-link">&laquo; First</span>
+    <span class="disabled-pagination-link">&lt; Previous</span>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <span class="current-page">{{ num }}</span>
+    {% else %}
+    <a href="{{ request.path }}?page={{ num }}" class="pagination-link">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}" class="pagination-link">Next &gt;</a>
+    <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="pagination-link">Last &raquo;</a>
+    {% else %}
+    <span class="disabled-pagination-link">Next &gt;</span>
+    <span class="disabled-pagination-link">Last &raquo;</span>
+    {% endif %}
+</div>
+{% endif %}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+$(document).ready(function() {
+    $.ajax({
+        url: '/get-random-quote/',
+        success: function(data) {
+            console.log('Quote data received:', data);
+            if (data.quote && data.quote.trim() !== "") {
+                var quoteHtml = '<p class="blockquote">' + data.quote + '</p>';
+                $('.quote').append(quoteHtml);
+            }
+        },
+    });
+});
+</script>
+
+<style>
+    .book-cover, .book-image {
+        width: 350px;
+        height: 350px;
+        object-fit: cover;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .pagination-link {
+        margin: 0 5px;
+        text-decoration: none;
+        color: chocolate;
+    }
+    .current-page {
+        margin: 0 5px;
+        font-weight: bold;
+    }
+    .disabled-pagination-link {
+        margin: 0 5px;
+        color: #ccc;
+    }
+    .filter-form {
+        text-align: center;
+        margin-top: 20px;
+    }
+    #category {
+        padding: 10px;
+        border: 1px solid #00303f;
+        border-radius: 5px;
+        width: 60%;
+    }
+    #category::placeholder {
+        color: #00303f;
+    }
+    .filter-form button {
+        padding: 10px 20px;
+        background-color: #00303f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .filter-form button:hover {
+        background-color: #023f51;
+    }
+    .blockquote {
+        font-size: 1.2em;
+        width: 60%;
+        margin: 20px auto;
+        font-family: 'Open Sans', sans-serif;
+        font-style: italic;
+        color: #555555;
+        padding: 1.2em 30px 1.2em 75px;
+        border-left: 8px solid #78C0A8;
+        line-height: 1.6;
+        position: relative;
+        background: #EDEDED;
+    }
+    .blockquote::before {
+        font-family: Arial;
+        content: "\201C";
+        color: #78C0A8;
+        font-size: 4em;
+        position: absolute;
+        left: 10px;
+        top: -10px;
+    }
+    .blockquote::after {
+        content: '';
+    }
+    .blockquote span {
+        display: block;
+        color: #333333;
+        font-style: normal;
+        font-weight: bold;
+        margin-top: 1em;
+    }
+</style>
+{% endblock content %}

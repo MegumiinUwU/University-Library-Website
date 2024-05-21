@@ -1,0 +1,232 @@
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f4f4; /* Light gray background */
+}
+
+header {
+  background-color: #00303f; /* Dark blue header background */
+  color: white; /* White text color for header */
+  padding: 20px;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white; /* White link color for header */
+}
+
+h1 {
+  color: #00303f; /* Dark blue header text color */
+  text-align: center;
+  margin-top: 20px;
+}
+
+#searchForm {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#searchInput {
+  padding: 10px;
+  border: 1px solid #00303f; /* Dark blue border */
+  border-radius: 5px;
+  width: 60%;
+}
+
+#searchInput::placeholder {
+  color: #00303f; /* Dark blue placeholder text color */
+}
+
+#searchForm button {
+  padding: 10px 20px;
+  background-color: #00303f; /* Dark blue button background */
+  color: white; /* White button text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#searchForm button:hover {
+  background-color: #023f51; /* Darker blue on hover */
+}
+
+#searchResults {
+  margin-top: 20px;
+}
+
+#searchResults ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#searchResults ul li {
+  margin-bottom: 10px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 65px;
+  border-radius: 0.5rem;
+  background-color: #00303f;
+  padding: 20px 40px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Add animation for the search form */
+#searchForm {
+  text-align: center;
+  margin-top: 20px;
+  animation: slideInDown 0.5s ease forwards;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add animation for the search results */
+#searchResults {
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.book-image {
+  width: 100px; /* Adjust the width of the book images */
+  height: auto; /* Maintain aspect ratio */
+  margin-right: 10px; /* Add some spacing between the image and the title */
+  border-radius: 5px; /* Add rounded corners */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+}
+.book-image {
+  max-width: 100%; /* Ensure the image fits its container */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Ensure the image doesn't interfere with other elements */
+  margin-bottom: 10px; /* Add some spacing between images */
+  border-radius: 8px; /* Apply rounded corners for aesthetics */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+}
+
+/* Styles for the container holding each book */
+.book-container {
+  display: flex; /* Use flexbox for easy alignment */
+  align-items: center; /* Align items vertically */
+}
+
+/* Styles for the book details (title and author) */
+.book-details {
+  margin-left: 20px; /* Add spacing between the image and text */
+}
+
+.dark-mode {
+  background-color: #1a1a1a; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+
+.dark-mode header {
+  background-color: #000000; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+
+#darkModeToggle {
+  background-color: #ffffff; /* Button background color */
+  color: #000000; /* Button text color */
+  border: none;
+  padding: 5px; /* Adjust padding to make it smaller */
+  border-radius: 50%; /* Make it round */
+  cursor: pointer;
+  margin: 10px; /* Adjust margin as needed */
+  font-size: 20px; /* Increase font size for emojis */
+  position: fixed; /* Fixed position */
+  top: 100px; /* Distance from top */
+  left: 20px; /* Distance from left */
+  z-index: 999; /* Ensure it's above other content */
+}
+.dark-mode h1 {
+  color: #ffffff;
+}
+
+/* Modal styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Position it fixed to the viewport */
+  z-index: 1000; /* Set a high z-index to ensure it appears on top of other content */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scrolling if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+}
+
+/* Modal content */
+.modal-content {
+  background-color: #fefefe; /* White background */
+  margin: 20% auto; /* Center modal vertically and horizontally */
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%; /* Set width */
+  max-width: 600px; /* Set maximum width */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+/* Close button */
+.close-modal {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.dark-mode .modal-content {
+  background-color: #1a1a1a; /* Dark background color */
+  border-color: #333; /* Darker border color */
+  color: #ffffff; /* Light text color */
+}
+
+.dark-mode .close-modal {
+  color: #ccc; /* Light color for close button in dark mode */
+}
+
+.dark-mode .close-modal:hover,
+.dark-mode .close-modal:focus {
+  color: #fff; /* White color on hover/focus for close button in dark mode */
+}

@@ -1,0 +1,92 @@
+{% extends 'default_pages/base.html' %}
+{% load static %}
+
+
+
+
+{% block content %}
+<h1 class="search-heading">Library Catalog</h1>
+
+<div class="search-container">
+    <form method="post" action="{% url 'search' %}" class="search-form">
+        {% csrf_token %}
+        <input type="text" name="query" id="searchInput" placeholder="Enter book title, author, description, or genre..." required>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div class="search-results">
+    {% if results %}
+        {% for book in results %}
+            <div class="book">
+                <h2>{{ book.name }}</h2>
+                <p>First Author: {{ book.first_author }}</p>
+                {% if book.second_author %}
+                    <p>Second Author: {{ book.second_author }}</p>
+                {% endif %}
+                {% if book.third_author %}
+                    <p>Third Author: {{ book.third_author }}</p>
+                {% endif %}
+                <p>ISBN: {{ book.isbn }}</p>
+                <p>Publish Year: {{ book.publish_year }}</p>
+                <p>Genre: {{ book.genre }}</p>
+                <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image ">
+            </div>
+        {% empty %}
+            <p>No books found.</p>
+        {% endfor %}
+    {% endif %}
+</div>
+<style>
+    .search-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .search-form input {
+        padding: 10px;
+        border: 1px solid #00303f;
+        border-radius: 5px;
+        width: 60%;
+    }
+
+    .search-form input::placeholder {
+        color: #00303f;
+    }
+
+    .search-form button {
+        padding: 10px 20px;
+        background-color: #00303f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .search-form button:hover {
+        background-color: #023f51;
+    }
+    .search-results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .book {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+        width: 250px;
+        text-align: left;
+    }
+    .book-image {
+        width: 350px; /* Set the width to your desired fixed size */
+        height: 350px; /* Maintain aspect ratio */
+    }
+
+</style>
+{% endblock content %}
+
+
+
