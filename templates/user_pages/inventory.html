@@ -1,0 +1,68 @@
+{% extends 'user_pages/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="search-heading">Inventory</h1>
+
+<div class="search-results">
+    {% if inventory %}
+        {% for book in inventory %}
+            <div class="book">
+                <h2>{{ book.name }}</h2>
+                <p>First Author: {{ book.first_author }}</p>
+                {% if book.second_author %}
+                    <p>Second Author: {{ book.second_author }}</p>
+                {% endif %}
+                {% if book.third_author %}
+                    <p>Third Author: {{ book.third_author }}</p>
+                {% endif %}
+                <p>ISBN: {{ book.isbn }}</p>
+                <p>Publish Year: {{ book.publish_year }}</p>
+                <p>Genre: {{ book.genre }}</p>
+                <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
+                <form method="post" action="{% url 'return_book' book.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="return-button">Return Book</button>
+                </form>
+            </div>
+        {% empty %}
+            <p>Your inventory is empty.</p>
+        {% endfor %}
+    {% else %}
+        <p>Your inventory is empty.</p>
+    {% endif %}
+</div>
+
+<style>
+    .search-results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .book {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+        width: 250px;
+        text-align: left;
+    }
+    .book-image {
+        width: 350px; /* Set the width to your desired fixed size */
+        height: 350px; /* Maintain aspect ratio */
+    }
+    .return-button {
+        padding: 10px 20px;
+        background-color: #dc3545; /* Red color for return button */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .return-button:hover {
+        background-color: #c82333; /* Darker shade of red on hover */
+    }
+</style>
+{% endblock content %}

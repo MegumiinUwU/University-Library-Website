@@ -2,22 +2,17 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.http import HttpResponse
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password,check_password
 from django.contrib.auth import validators
 from .models import User, Book
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-
-
-import random
-from django.http import JsonResponse
-from .models import Book
+from django.contrib.auth import authenticate, login
+from django.urls import reverse
 import requests
 from django.shortcuts import get_object_or_404
-
-
 
 def home(request):
     return render(request, 'default_pages/home.html')
@@ -41,11 +36,81 @@ def search(request):
 
     return render(request, 'default_pages/search.html', {'results': results})
 
-
-
+from django.http import JsonResponse
 def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if email and password:
+            try:
+                user = User.objects.get(email=email)
+                if check_password(password, user.password):
+                    response = render(request, 'user_pages/home.html')
+                    response.set_cookie('user_email', email)
+                    return response
+                else:
+                    messages.error(request, 'Invalid email or password')
+            except User.DoesNotExist:
+                messages.error(request, 'Invalid email or password')
+        else:
+            messages.error(request, 'Please enter both email and password')
+
     return render(request, 'default_pages/login.html')
 
+def get_random_quote(request):
+    
+    response = requests.get('https://api.quotable.io/random')
+    data = response.json()
+    quote = data['content']
+    return JsonResponse({'quote': quote})
+
+import random
+def get_random_books(request):
+    # Retrieve all book objects from the database
+    all_books = list(Book.objects.all())
+    
+    # Shuffle the list of books
+    random.shuffle(all_books)
+    
+    # Select a subset of the shuffled list (e.g., the first 5 books)
+    random_books = all_books[:3]
+    
+    # Prepare the data for JSON response
+    books_data = [
+        {
+            'name': book.name,
+            'first_author': book.first_author,
+            'second_author': book.second_author,
+            'third_author': book.third_author,
+            'isbn': book.isbn,
+            'publish_year': book.publish_year,
+            'genre': book.genre,
+            'description': book.description,
+            'cover_image': book.cover_image.url if book.cover_image else None,
+        }
+        for book in random_books
+    ]
+    
+    # Return the random books as JSON
+    return JsonResponse({'books': books_data})
+
+
+def get_book_details(request):
+    name = request.GET.get('name')
+    book = get_object_or_404(Book, name=name)
+    book_data = {
+        'name': book.name,
+        'first_author': book.first_author,
+        'second_author': book.second_author,
+        'third_author': book.third_author,
+        'isbn': book.isbn,
+        'publish_year': book.publish_year,
+        'genre': book.genre,
+        'description': book.description,
+        'cover_image': book.cover_image.url if book.cover_image else None,
+    }
+    return JsonResponse({'book': book_data})
 
 import re
 
@@ -110,8 +175,6 @@ def view_books(request):
     else:
         books = Book.objects.all()
 
-    print(books)
-
     # Pagination
     paginator = Paginator(books, 10)  # Show 10 books per page
     page_number = request.GET.get('page')
@@ -125,56 +188,3 @@ def view_books(request):
         page_obj = paginator.page(paginator.num_pages)
 
     return render(request, 'default_pages/view_books.html', {'page_obj': page_obj})
-
-
-def get_random_books(request):
-    # Retrieve all book objects from the database
-    all_books = list(Book.objects.all())
-    
-    # Shuffle the list of books
-    random.shuffle(all_books)
-    
-    # Select a subset of the shuffled list (e.g., the first 5 books)
-    random_books = all_books[:3]
-    
-    # Prepare the data for JSON response
-    books_data = [
-        {
-            'name': book.name,
-            'first_author': book.first_author,
-            'second_author': book.second_author,
-            'third_author': book.third_author,
-            'isbn': book.isbn,
-            'publish_year': book.publish_year,
-            'genre': book.genre,
-            'description': book.description,
-            'cover_image': book.cover_image.url if book.cover_image else None,
-        }
-        for book in random_books
-    ]
-    
-    # Return the random books as JSON
-    return JsonResponse({'books': books_data})
-
-def get_random_quote(request):
-    
-    response = requests.get('https://api.quotable.io/random')
-    data = response.json()
-    quote = data['content']
-    return JsonResponse({'quote': quote})
-
-def get_book_details(request):
-    name = request.GET.get('name')
-    book = get_object_or_404(Book, name=name)
-    book_data = {
-        'name': book.name,
-        'first_author': book.first_author,
-        'second_author': book.second_author,
-        'third_author': book.third_author,
-        'isbn': book.isbn,
-        'publish_year': book.publish_year,
-        'genre': book.genre,
-        'description': book.description,
-        'cover_image': book.cover_image.url if book.cover_image else None,
-    }
-    return JsonResponse({'book': book_data})

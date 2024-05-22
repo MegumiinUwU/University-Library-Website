@@ -1,0 +1,240 @@
+{% extends 'user_pages/base.html' %}
+{% load static %}
+
+
+
+
+{% block content %}
+
+<h1>User Details</h1>
+<div class="JoJo">
+
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" class="form">
+    {% csrf_token %}
+    
+    <div class="avatar-container">
+      <label for="profilePicture">Profile Picture:</label>
+      <input type="file" id="profilePicture" name="profilePicture" style="display: none;" />
+      <label for="profilePicture" class="avatar-label">
+        <img src="{{ User.profile_picture.url }}" alt="Avatar" class="avatar" />
+      </label>
+    </div>
+
+    <div class="field">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" value="{{ User.username }}" required />
+    </div>
+
+    <div class="field">
+      <label for="oldpassword">Old Password:</label>
+      <input type="password" id="oldpassword" name="oldpassword" minlength="8" required />
+    </div>
+
+    <div class="field">
+      <label for="newpassword">New Password:</label>
+      <input type="password" id="newpassword" name="newpassword" minlength="8" />
+    </div>
+
+    <div class="field">
+      <label for="confirmpassword">Confirm Password:</label>
+      <input type="password" id="confirmpassword" name="confirmpassword" minlength="8" />
+    </div>
+
+    <div class="field">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="{{ User.email }}" required />
+    </div>
+
+    <div class="field">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="tel" id="phoneNumber" name="phoneNumber" value="{{ User.phone }}" required />
+    </div>
+
+    <div class="field">
+      <label for="dateOfBirth">Date Of Birth:</label>
+      <input type="date" id="dateOfBirth" name="dateOfBirth" value="{{ User.dob }}" required max="2026-12-31"/>
+    </div>
+
+    <div class="center-button">
+      <input type="submit" value="Save" class="button" />
+    </div>
+  </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get the image element and file input element
+    const avatarImg = document.querySelector('.avatar');
+    const fileInput = document.getElementById('profilePicture');
+  
+    // Add click event listener to the image
+    avatarImg.addEventListener('click', function(event) {
+      // Stop the event from propagating further
+      event.stopPropagation();
+      
+      // Prevent the default action of the click event on the image
+      event.preventDefault();
+  
+      // Trigger click event on file input when image is clicked
+      fileInput.click();
+    });
+  
+    // Add change event listener to file input
+    fileInput.addEventListener('change', function() {
+      // Check if a file is selected
+      if (fileInput.files && fileInput.files[0]) {
+        // Read the selected file
+        const reader = new FileReader();
+  
+        reader.onload = function(e) {
+          // Set the image source to the selected file
+          avatarImg.src = e.target.result;
+        }
+  
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+  });
+</script>
+<style>
+    .JoJo {
+      margin-bottom: 100px;
+    }
+  
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f5f4f4;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+      font-family: Arial, sans-serif;
+    }
+  
+    h1 {
+      text-align: center;
+    }
+  
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  
+    .avatar-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-top: 10px;
+      border: 3px solid #ccc;
+      object-fit: cover;
+    }
+  
+    .field {
+      margin-bottom: 20px;
+    }
+  
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+  
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+  
+    input[type="file"] {
+      display: none;
+    }
+  
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      border-radius: 0.5rem;
+      background-color: #00303f;
+      padding: 20px 40px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .footer p {
+      margin: 0;
+      font-size: 18px;
+    }
+  
+    .NAV {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      background-color: #00303f;
+      padding: 10px 40px;
+    }
+  
+    .NAV ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+    }
+  
+    .NAV li {
+      display: inline;
+      margin-right: 20px;
+    }
+  
+    .NAV li a {
+      text-decoration: none;
+      color: white;
+      font-size: 18px;
+    }
+  
+    .NAV li:hover {
+      background-color: #023f51;
+    }
+  
+    .button {
+      padding: 10px 20px;
+      border: none;
+      width: 30%;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      background-color: #00303F;
+      color: #F5F4F4;
+      border: 2px solid #00303F;
+    }
+  
+    .button:hover {
+      background-color: #CAE4DB;
+      color: #00303F;
+    }
+  
+    .center-button {
+      text-align: center;
+    }
+  </style>
+{% endblock content %}

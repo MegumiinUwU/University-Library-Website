@@ -1,10 +1,16 @@
 {% extends 'default_pages/base.html' %}
 {% load static %}
 
+
+
 {% block content %}
 <h1 class="book-heading">All Books</h1>
+<!-- <div class="intro">
+    <h1>All Books</h1>
+</div> -->
 <div class="quote"></div>
 <p>
+    <!-- Form for filtering books -->
     <form method="post" action="{% url 'view_books' %}" class="filter-form">
         {% csrf_token %}
         <label for="category">Filter by Genre:</label>
@@ -12,6 +18,7 @@
         <button type="submit">Filter</button>
     </form>
 </p>
+<!-- Display books -->
 <div class="books">
     {% for book in page_obj %}
     <div class="book" onclick="bookDetails('{{ book.name }}')">
@@ -23,6 +30,8 @@
         {% if book.third_author %}
         <p>Third Author: {{ book.third_author }}</p>
         {% endif %}
+        <p>ISBN: {{ book.isbn }}</p>
+        <p>Publish Year: {{ book.publish_year }}</p>
         <p>Genre: {{ book.genre }}</p>
         <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
     </div>
@@ -31,6 +40,7 @@
     {% endfor %}
 </div>
 
+<!-- Pagination links -->
 {% if page_obj.has_other_pages %}
 <div class="pagination">
     {% if page_obj.has_previous %}
@@ -57,17 +67,14 @@
     <span class="disabled-pagination-link">Last &raquo;</span>
     {% endif %}
 </div>
-
 <div id="bookModal" class="modal">
     <div class="modal-content" id="modalContent">
     </div>
 </div>
 {% endif %}
-
-
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
 $(document).ready(function() {
     $.ajax({
         url: '/get-random-quote/',
@@ -83,7 +90,7 @@ $(document).ready(function() {
 </script>
 
 <script>
-    
+
 function bookDetails(name) {
     const filterParams = new URLSearchParams(window.location.search);
     const queryParams = filterParams.toString();
@@ -141,7 +148,6 @@ function showModal(book) {
         }
     }
 </script>
-
 <style>
     .book{
         cursor: pointer; 
@@ -283,4 +289,7 @@ function showModal(book) {
 }
 
 </style>
+
+
+
 {% endblock content %}

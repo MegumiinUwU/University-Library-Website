@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'user_pages.apps.UserPagesConfig',
     'default_pages.apps.DefaultPagesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -134,3 +135,4 @@ MEDIA_URL = '/media/'                                                  #<<<<<<<<
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

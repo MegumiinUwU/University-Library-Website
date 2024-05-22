@@ -1,4 +1,4 @@
-{% extends 'default_pages/base.html' %}
+{% extends 'user_pages/base.html' %}
 {% load static %}
 
 
@@ -8,7 +8,7 @@
 <h1 class="search-heading">Library Catalog</h1>
 
 <div class="search-container">
-    <form method="post" action="{% url 'search' %}" class="search-form">
+    <form method="post" action="{% url 'search2' %}" class="search-form">
         {% csrf_token %}
         <input type="text" name="query" id="searchInput" placeholder="Enter book title, author, description, or genre..." required>
         <button type="submit">Search</button>

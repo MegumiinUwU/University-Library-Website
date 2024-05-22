@@ -1,0 +1,70 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-radius: 0.5rem;
+    background-color: #00303f;
+    padding: 20px 40px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+
+
+/* Wishlist item container */
+.wishlist-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Book cover image */
+.wishlist-item img {
+    width: 100px;
+    height: auto;
+    margin-right: 20px;
+    border-radius: 5px;
+}
+
+/* Book details */
+.book-details {
+    flex: 1;
+}
+
+/* Book title */
+.book-details h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Book author and genre */
+.book-details p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Remove button */
+.remove-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+
+
+

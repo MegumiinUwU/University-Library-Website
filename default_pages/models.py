@@ -20,6 +20,7 @@ class Book(models.Model):
     genre = models.CharField(max_length=100)
     description = models.TextField()
     cover_image = models.ImageField(upload_to='book_covers/')
+    quantity = models.PositiveIntegerField(default=1)  
 
     def __str__(self):
         return self.name

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Online Library{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'default_pages/css/HomeStyles.css' %}">
+    <script src="{% static 'DarkmodeButton.js' %}" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="NavHome">
+            <div class="title">FCAI Library</div>
+            <a href="#" class="toggle-button">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </a>
+            <div class="navbar-links">
+                <ul>
+                    <li><a href="{% url 'profile2' %}">Profile</a></li>
+                    <li><a href="{% url 'home2' %}">Home</a></li>
+                    <li><a href="{% url 'inventory2' %}">Inventory</a></li>
+                    <li><a href="{% url 'wishlist2' %}">Wishlist</a></li>
+                    <li><a href="{% url 'search2' %}">Search</a></li>
+                    <li><a href="{% url 'borrow_books2' %}">Borrow Books</a></li>
+                    <li><a href="{% url 'logout2' %}">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <button id="darkModeToggle">🌞🌛</button>
+    {% block content %}{% endblock %}
+    <footer>
+        <div class="Copywrite">&copy; 2024 FCAI Online Library</div>
+    </footer>
+</body>
+</html>
