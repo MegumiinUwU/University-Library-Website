@@ -231,3 +231,6 @@ def get_book_details(request):
         'cover_image': book.cover_image.url if book.cover_image else None,
     }
     return JsonResponse({'book': book_data})
+
+
+

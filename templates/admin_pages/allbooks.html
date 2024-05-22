@@ -33,7 +33,7 @@
         <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
 
         <!-- Button for editing the book -->
-        <button type="button" class="button edit-button" data-book-id="{{ book.id }}">Edit Book</button>
+        <button type="button" class="button edit-button" onclick="bookDetails('{{ book.name }}')">Edit Book</button>
     </div>
     {% empty %}
     <p>No books found.</p>
@@ -70,7 +70,7 @@
 {% endif %}
 
 <!-- Edit Book Modal -->
-<div id="editBookModal" class="modal">
+<!-- <div id="editBookModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Edit Book</h2>
@@ -78,12 +78,12 @@
             {% csrf_token %}
             <input type="hidden" id="bookIdInput" name="book_id">
             <label for="nameInput">Name:</label>
-            <input type="text" id="nameInput" name="name" required>
+            <input type="text" id="nameInput" name="name" required> -->
             <!-- Add input fields for other book details -->
-            <button type="submit" class="button">Save Changes</button>
+            <!-- <button type="submit" class="button">Save Changes</button>
         </form>
     </div>
-</div>
+</div> -->
 
 <style>
     .book-cover {
@@ -160,9 +160,18 @@
         margin: 5px;
     }
 
-    .button {
+        .button {
         padding: 15px 30px;
-        background-color: #28a745;
+        background-image: -webkit-linear-gradient(top, #87b18e, #023f51); 
+        background-image: -moz-linear-gradient(top, #87b18e, #023f51);
+        background-image: -ms-linear-gradient(top, #87b18e, #023f51);
+        background-image: -o-linear-gradient(top, #87b18e, #023f51);
+        background-image: linear-gradient(top, #87b18e, #023f51);
+        -webkit-border-radius: 28; 
+        -moz-border-radius: 28; 
+         border-radius: 28px;
+        text-shadow: 3px 2px 1px #373a45;  -webkit-box-shadow: 6px 5px 24px #666666;  -moz-box-shadow: 6px 5px 24px #666666;  box-shadow: 6px 5px 24px #514c4c;
+        font-family: Arial;  color: #fafafa;  font-size: 27px;  padding: 19px;  text-decoration: none;
         color: white;
         border: none;
         border-radius: 5px;
@@ -171,12 +180,14 @@
     }
 
     .button:hover {
-        background-color: #218838;
-    }
+  background-image: -webkit-linear-gradient(top, #023f51, #87b18e);
+  background-image: -moz-linear-gradient(top, #023f51, #87b18e);
+  background-image: -ms-linear-gradient(top, #023f51, #87b18e);
+  background-image: -o-linear-gradient(top, #023f51, #87b18e);
+  background-image: linear-gradient(top, #023f51, #87b18e);
+  text-decoration: none;
+}
 
-    .button:focus {
-        outline: none;
-    }
 
     .messages {
         text-align: center;
@@ -241,28 +252,29 @@
 
     /* Modal Styles */
     .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 60px;
-    }
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker background */
+    padding-top: 60px;
+}
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 5px;
-    }
+.modal-content {
+    background: radial-gradient(circle, #e0e0e0, #b0d1c6);
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: none; /* Remove the border */
+    width: 90%; /* Wider modal */
+    max-width: 800px; /* Increase max-width */
+    border-radius: 15px; /* Rounded edges */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+}
 
     .close {
         color: #aaa;
@@ -278,19 +290,21 @@
         cursor: pointer;
     }
 
-    .modal form input {
-        width: 100%;
-        padding: 10px;
-        margin: 5px 0;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+    .modal form input,
+.modal form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0; 
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
 
     .modal form button {
         width: 100%;
         padding: 10px;
-        background-color: #28a745;
+        background-color: #023f51;
         color: white;
         border: none;
         border-radius: 4px;
@@ -298,66 +312,160 @@
     }
 
     .modal form button:hover {
-        background-color: #218838;
+        background-color: #87b18e;
     }
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-$(document).ready(function() {
-    // Function to handle form submission
-    $('#editBookForm').on('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
-        var formData = new FormData(this); // Create FormData object
-        $.ajax({
-            url: '/admin/edit-book/', // URL to submit the form data
-            type: 'POST', // HTTP method
-            data: formData, // Form data
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                if (data.success) {
-                    alert('Book edited successfully!');
-                    location.reload(); // Reload the page to see updated book details
-                } else {
-                    alert('Error editing book.');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
+function bookDetails(name) {
+    console.log('Button clicked for book:', name);
+    const filterParams = new URLSearchParams(window.location.search);
+    const queryParams = filterParams.toString();
+    
+    fetch("/get-book-details/?name=" + encodeURIComponent(name) + "&" + queryParams)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received from server:', data);
+            createAndShowModal(data.book);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
         });
-    });
-    $('.edit-button').on('click', function() {
-        var bookId = $(this).data('book-id'); // Get the book ID from the data attribute
-        // Send AJAX request to get book details
-        $.ajax({
-            url: '/get-book-details/?name=' + encodeURIComponent(bookId), // URL to fetch book details
-            success: function(data) {
-                // Populate the form fields with book details
-                $('#bookIdInput').val(data.book.id);
-                $('#nameInput').val(data.book.name);
-                // Populate other form fields with respective book details
-                // Show the edit book modal
-                $('#editBookModal').show();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-            }
-        });
+}
+
+function createAndShowModal(book) {
+    console.log('createAndShowModal function called with book:', book);
+
+    const modal = document.createElement('div');
+    modal.id = 'bookModal';
+    modal.classList.add('modal');
+    
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.classList.add('close');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.onclick = closeModal;
+    
+    const bookDetails = `
+    <form id="bookForm">
+        <h2><strong>Name:</strong></h2>
+        <h2><input type="text" name="name" value="${book.name || ''}" /></h2>
+        <div class="image-container">
+            ${book.cover_image ? `<img src="${book.cover_image}" alt="Book Cover" class="book-image" id="bookImage">` : '<img src="placeholder.jpg" alt="Book Cover" class="book-image" id="bookImage">'}
+            <input type="file" name="cover_image" id="coverImageInput" style="display:none;">
+        </div>
+        <p>
+            <strong>First Author:</strong>
+            <input type="text" name="first_author" value="${book.first_author || ''}" />
+        </p>
+        ${book.second_author ? `
+        <p>
+            <strong>Second Author:</strong>
+            <input type="text" name="second_author" value="${book.second_author}" />
+        </p>
+        ` : ''}
+        ${book.third_author ? `
+        <p>
+            <strong>Third Author:</strong>
+            <input type="text" name="third_author" value="${book.third_author}" />
+        </p>
+        ` : ''}
+        <p>
+            <strong>ISBN:</strong>
+            <input type="text" name="isbn" value="${book.isbn || ''}" />
+        </p>
+        <p>
+            <strong>Publish Year:</strong>
+            <input type="text" name="publish_year" value="${book.publish_year || ''}" />
+        </p>
+        <p>
+            <strong>Genre:</strong>
+            <input type="text" name="genre" value="${book.genre || ''}" />
+        </p>
+        <p>
+    <strong>Description:</strong><br>
+    <textarea name="description" rows="10" cols="50">${book.description || ''}</textarea>
+    </p>
+        <button type="button" id="saveButton">Save</button>
+    </form>
+    `;
+    
+    modalContent.innerHTML = bookDetails;
+    modalContent.prepend(closeBtn);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+
+    modal.style.display = "block";
+
+    const bookImage = document.getElementById('bookImage');
+    const coverImageInput = document.getElementById('coverImageInput');
+    const saveButton = document.getElementById('saveButton');
+
+    bookImage.addEventListener('click', function() {
+        coverImageInput.click();
     });
 
-    // Function to close modal
-    $('.close').on('click', function() {
-        $('#editBookModal').hide(); // Hide the edit book modal
-    });
-
-    // Close modal when clicked outside
-    $(window).click(function(event) {
-        var modal = document.getElementById('editBookModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
+    coverImageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                bookImage.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
         }
     });
-});
+
+    saveButton.addEventListener('click', function() {
+        saveBookDetails(book.name);
+    });
+}
+
+function closeModal() {
+    const modal = document.getElementById('bookModal');
+    if (modal) {
+        modal.style.display = "none";
+        modal.remove(); 
+    }
+}
+////// for youssef to work///////
+function saveBookDetails(bookName) {
+    const form = document.getElementById('bookForm');
+    const formData = new FormData(form);
+    
+    formData.append('original_name', bookName);
+
+    fetch("/save-book-details", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Book details saved successfully:', data);
+        closeModal();
+    })
+    .catch(error => {
+        console.error('There was a problem with the save operation:', error);
+    });
+}
+//////////////////////////////////////////////
+window.onclick = function(event) {
+    const modal = document.getElementById('bookModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
 </script>
 {% endblock content %}
