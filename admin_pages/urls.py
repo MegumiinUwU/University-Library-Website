@@ -8,6 +8,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout3'),
     path('addpage/', views.addpage, name='addpage3'),
     path('addbook/', views.addbook, name='addbook3'),
+    path('save-book-details', views.save_book_details, name='save_book_details'),
     path('get-all-books/', views.admin_book_list, name='get_all_books3'),
     path('get-book-details/', views.get_book_details, name='get_book_details'),
     path('edit-book/<int:book_id>/', views.edit_book, name='edit_book'),

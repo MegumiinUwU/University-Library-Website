@@ -215,6 +215,31 @@ def get_random_books(request):
     # Return the random books as JSON
     return JsonResponse({'books': books_data})
 
+def save_book_details(request):
+    if request.method == 'POST':
+        original_name = request.POST.get('original_name')
+        book = get_object_or_404(Book, name=original_name)
+        
+        # Update book details
+        book.name = request.POST.get('name')
+        book.first_author = request.POST.get('first_author')
+        book.second_author = request.POST.get('second_author')
+        book.third_author = request.POST.get('third_author')
+        book.isbn = request.POST.get('isbn')
+        book.publish_year = request.POST.get('publish_year')
+        book.genre = request.POST.get('genre')
+        book.description = request.POST.get('description')
+        
+        # Handle the cover image update
+        if 'cover_image' in request.FILES:
+            book.cover_image = request.FILES['cover_image']
+        
+        book.save()
+        
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
 
 def get_book_details(request):
     name = request.GET.get('name')
@@ -231,6 +256,3 @@ def get_book_details(request):
         'cover_image': book.cover_image.url if book.cover_image else None,
     }
     return JsonResponse({'book': book_data})
-
-
-
