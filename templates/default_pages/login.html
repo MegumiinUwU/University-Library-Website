@@ -1,24 +1,42 @@
 {% extends 'default_pages/base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Login</h1>
-<form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-    </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <button type="submit">Login</button>
-</form>
-{% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+
+
+<header>
+    <link rel="stylesheet" href="{% static 'default_pages/css/Form.css' %}">
+</header>
+<main class="form">
+    <h1>Login</h1>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <form class="Log in form">
+            <div class="formElement">
+            <input type="email" id="email" name="email" required>
+            <span></span>
+            <label for="email">Email:</label>
+        </div>
+        
+        <div class="formElement">
+            <input type="password" id="password" name="password" required>
+            <span></span>
+            <label for="password">Password:</label>
+        </div>
+
+        <div>
+            <button type="submit">Login</button>
+        </div>
+        
+    </form>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</main>
+
+
 {% endblock content %}

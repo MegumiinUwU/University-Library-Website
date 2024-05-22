@@ -29,7 +29,7 @@
 <!-- Display books -->
 <div class="books">
     {% for book in page_obj %}
-    <div class="book">
+    <div class="book" onclick="bookDetails('{{ book.name }}')">
         <h2>Title: {{ book.name }}</h2>
         <p>First Author: {{ book.first_author }}</p>
         {% if book.second_author %}
@@ -38,8 +38,8 @@
         {% if book.third_author %}
         <p>Third Author: {{ book.third_author }}</p>
         {% endif %}
-        <p>ISBN: {{ book.isbn }}</p>
-        <p>Publish Year: {{ book.publish_year }}</p>
+        <!-- <p>ISBN: {{ book.isbn }}</p>
+        <p>Publish Year: {{ book.publish_year }}</p> -->
         <p>Genre: {{ book.genre }}</p>
         <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
 
@@ -87,20 +87,96 @@
 </div>
 {% endif %}
 
+<script>
+    function bookDetails(name) {
+        console.log('Button clicked for book:', name);
+        const filterParams = new URLSearchParams(window.location.search);
+        const queryParams = filterParams.toString();
+        
+        fetch("/get-book-details/?name=" + encodeURIComponent(name) + "&" + queryParams)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received from server:', data);
+                createAndShowModal(data.book);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+    
+    function createAndShowModal(book) {
+        console.log('createAndShowModal function called with book:', book);
+    
+        const modal = document.createElement('div');
+        modal.id = 'bookModal';
+        modal.classList.add('modal');
+        
+        const modalContent = document.createElement('div');
+        modalContent.classList.add('modal-content');
+        
+        const closeBtn = document.createElement('span');
+        closeBtn.classList.add('close');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.onclick = closeModal;
+        
+        const bookDetails = `
+            <h2>${book.name}</h2>
+            ${book.cover_image ? `<img src="${book.cover_image}" alt="Book Cover" class="book-image">` : ''}
+            <p><strong>First Author:</strong> ${book.first_author || ''}</p>
+            ${book.second_author ? `<p><strong>Second Author:</strong> ${book.second_author}</p>` : ''}
+            ${book.third_author ? `<p><strong>Third Author:</strong> ${book.third_author}</p>` : ''}
+            <p><strong>ISBN:</strong> ${book.isbn || ''}</p>
+            <p><strong>Publish Year:</strong> ${book.publish_year || ''}</p>
+            <p><strong>Genre:</strong> ${book.genre || ''}</p>
+            <p><strong>Description:</strong> ${book.description || ''}</p>
+        `;
+ 
+        modalContent.innerHTML = bookDetails;
+        modalContent.prepend(closeBtn);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+    
+        modal.style.display = "block";
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById('bookModal');
+        if (modal) {
+            modal.style.display = "none";
+            modal.remove(); // Remove the modal from the DOM
+        }
+    }
+    
+    window.onclick = function(event) {
+        const modal = document.getElementById('bookModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+    </script>
+    
+
 <style>
-    .book-cover {
+    .book{
+        cursor: pointer; 
+        transition: transform 0.3s ease; 
+    }
+    .book:hover {
+        transform: scale(1.05); 
+    }
+    .book-cover, .book-image {
         width: 350px;
         height: 350px;
         object-fit: cover;
         margin-top: 10px;
         border-radius: 5px;
     }
-
-    .book-image {
-        width: 350px;
-        height: 350px;
-        object-fit: cover;
-    }
+   
 
     .pagination {
         margin-top: 20px;
@@ -165,7 +241,16 @@
 
     .button {
         padding: 15px 30px;
-        background-color: #28a745;
+        background-image: -webkit-linear-gradient(top, #87b18e, #023f51); 
+        background-image: -moz-linear-gradient(top, #87b18e, #023f51);
+        background-image: -ms-linear-gradient(top, #87b18e, #023f51);
+        background-image: -o-linear-gradient(top, #87b18e, #023f51);
+        background-image: linear-gradient(top, #87b18e, #023f51);
+        -webkit-border-radius: 28; 
+        -moz-border-radius: 28; 
+         border-radius: 28px;
+        text-shadow: 3px 2px 1px #373a45;  -webkit-box-shadow: 6px 5px 24px #666666;  -moz-box-shadow: 6px 5px 24px #666666;  box-shadow: 6px 5px 24px #514c4c;
+        font-family: Arial;  color: #fafafa;  font-size: 27px;  padding: 19px;  text-decoration: none;
         color: white;
         border: none;
         border-radius: 5px;
@@ -174,12 +259,13 @@
     }
 
     .button:hover {
-        background-color: #218838;
-    }
-
-    .button:focus {
-        outline: none;
-    }
+  background-image: -webkit-linear-gradient(top, #023f51, #87b18e);
+  background-image: -moz-linear-gradient(top, #023f51, #87b18e);
+  background-image: -ms-linear-gradient(top, #023f51, #87b18e);
+  background-image: -o-linear-gradient(top, #023f51, #87b18e);
+  background-image: linear-gradient(top, #023f51, #87b18e);
+  text-decoration: none;
+}
 
     .messages {
         text-align: center;
@@ -237,6 +323,58 @@
         font-weight: bold;
         margin-top: 1em;
     }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal h2 {
+    text-align: center;
+    font-size: 24px; /* Example font size */
+    position: relative;
+}
+
+
+
+    .modal-content {
+        background: radial-gradient(circle, #e0e0e0, #9dc9bb);
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .book-image {
+        max-width: 200px;
+        border-radius: 8px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.1); /* Fading shadow */
+}
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
