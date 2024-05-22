@@ -16,6 +16,8 @@
                 {% if book.third_author %}
                     <p>Third Author: {{ book.third_author }}</p>
                 {% endif %}
+                <p>ISBN: {{ book.isbn }}</p>
+                <p>Publish Year: {{ book.publish_year }}</p>
                 <p>Genre: {{ book.genre }}</p>
                 <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
                 <form method="post" action="{% url 'return_book' book.id %}">
@@ -30,6 +32,7 @@
         <p>Your inventory is empty.</p>
     {% endif %}
 </div>
+
 
 <script>
     function bookDetails(name) {
@@ -103,93 +106,91 @@
         }
     }
     </script>
+    <style>
+        .search-results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .book{
+            cursor: pointer; 
+            transition: transform 0.3s ease; 
+        }
+        .book:hover {
+            transform: scale(1.05); 
+        }
+        .book-cover, .book-image {
+            width: 350px;
+            height: 350px;
+            object-fit: cover;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
     
-
-<style>
-    .search-results {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 20px;
+        .modal h2 {
+        text-align: center;
+        font-size: 24px; /* Example font size */
+        position: relative;
     }
-    .book{
-        cursor: pointer; 
-        transition: transform 0.3s ease; 
-    }
-    .book:hover {
-        transform: scale(1.05); 
-    }
-    .book-cover, .book-image {
-        width: 350px;
-        height: 350px;
-        object-fit: cover;
-        margin-top: 10px;
-        border-radius: 5px;
-    }
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 100000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.4);
-    }
-
-    .modal h2 {
-    text-align: center;
-    font-size: 24px; /* Example font size */
-    position: relative;
-}
-
-
-
-    .modal-content {
-        background: radial-gradient(circle, #e0e0e0, #9dc9bb);
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .book-image {
-        max-width: 200px;
-        border-radius: 8px;
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.1); /* Fading shadow */
-}
     
-    .return-button {
-        padding: 10px 20px;
-        background-color: #dc3545; /* Red color for return button */
-        color: white;
+    
+    
+        .modal-content {
+            background: radial-gradient(circle, #e0e0e0, #9dc9bb);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+    
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .book-image {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.1); /* Fading shadow */
+    }
         
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    .return-button:hover {
-        background-color: #c82333; /* Darker shade of red on hover */
-    }
-</style>
+        .return-button {
+            padding: 10px 20px;
+            background-color: #dc3545; /* Red color for return button */
+            color: white;
+            
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .return-button:hover {
+            background-color: #c82333; /* Darker shade of red on hover */
+        }
+    </style>
 {% endblock content %}

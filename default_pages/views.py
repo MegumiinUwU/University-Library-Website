@@ -46,9 +46,14 @@ def login_view(request):
             try:
                 user = User.objects.get(email=email)
                 if check_password(password, user.password):
-                    response = render(request, 'user_pages/home.html')
-                    response.set_cookie('user_email', email)
-                    return response
+                    if user.is_admin:
+                        response = render(request, 'admin_pages/home.html')
+                        response.set_cookie('user_email', email)
+                        return response
+                    else:
+                        response = render(request, 'user_pages/home.html')
+                        response.set_cookie('user_email', email)
+                        return response
                 else:
                     messages.error(request, 'Invalid email or password')
             except User.DoesNotExist:
@@ -139,6 +144,8 @@ def signup(request):
         dob = request.POST['dob']
         country_code = request.POST['country_code']
         phone = request.POST['phone']
+        account_type = request.POST['is_admin']
+        print(account_type)
 
         # Validate password strength
         if not custom_validate_password(password):
@@ -158,6 +165,7 @@ def signup(request):
         user.dob = dob
         user.country_code = country_code
         user.phone = phone
+        user.is_admin = account_type 
         user.save()
 
         # messages.success(request, 'Account created successfully.')

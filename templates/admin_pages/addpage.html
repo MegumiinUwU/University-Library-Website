@@ -1,0 +1,271 @@
+
+{% extends 'admin_pages/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% if error_message %}
+<p class="success-message" style="color: green; font-weight: bold; background-color: #e6ffe6; padding: 10px; border: 1px solid #66cc66; border-radius: 5px;">{{ error_message }}</p>
+{% endif %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Book Form</title>
+  </head>
+  <body>
+
+
+    <main>
+      <div class="container">
+        <h2 class="heading">Add New Book</h2>
+        <p>
+          Thank you for contribution to our library Please make sure to enter
+          the needed information.
+        </p>
+
+        <form id="addBookForm" action="{% url 'addbook3' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+          <div class="form-group">
+            <label for="name"> Name: </label>
+            <input type="text" id="name" name="name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="author1"> First Author: </label>
+            <input
+              type="text"
+              id="author1"
+              name="author1"
+              placeholder="Who wrote this book?"
+              required
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="author2"> Second Author: </label>
+            <input
+              type="text"
+              id="author2"
+              name="author2"
+              placeholder="Who wrote this book?"
+              
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="author3"> Third Author: </label>
+            <input
+              type="text"
+              id="author3"
+              name="author3"
+              placeholder="Who wrote this book?"
+              
+            />
+          </div>
+          
+          <div class="small-input">
+            <div class="form-group">
+              <label for="ISBN"> ISBN: </label>
+              <input type="number" id="ISBN" name="ISBN" min="0" required />
+            </div>
+
+            <div class="form-group">
+              <label for="publishYear"> Publish Year: </label>
+              <input
+                type="number"
+                id="publishYear"
+                name="publishYear"
+                min="1800"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="genre"> Genre: </label>
+              <select id="genre" name="genre" required>
+                <option value="" disabled selected>Select Genre</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Science Fiction">Science Fiction</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Romance">Romance</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Horror">Horror</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Historical Fiction">Historical Fiction</option>
+                <option value="Biography">Biography</option>
+                <option value="Self-Help">Self-Help</option>
+                <option value="Cookbook">Cookbook</option>
+                <option value="Manga">Manga</option>
+                <option value="Comic Book">Comic Book</option>
+                <option value="Programing">Programing</option>
+                <option value="Software">Software</option>
+                <option value="Science">Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Medicine">Medicine</option>
+                <option value="Psychology">Psychology</option>
+                <option value="Sociology">Sociology</option>
+                <option value="Philosophy">Philosophy</option>
+                <option value="Economics">Economics</option>
+                <option value="Political Science">Political Science</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description"> Description: </label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Tell us about this book!"
+              
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="cover" id="cover"> Cover: </label>
+            <input type="file" id="cover" name="cover" accept="image/*" />
+          </div>
+
+          <div class="button-group">
+            <input type="reset" value="Reset" />
+            <input id="submitButton" type="submit" value="Submit" />
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2024 FCAI Online Library</p>
+    </footer>
+  </body>
+
+  <style>
+    body {
+  overflow-y: scroll;
+  padding: 0;
+  padding-bottom: 100px;
+}
+main {
+  max-width: 75%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  width: 100%;
+}
+
+label {
+  display: inline-block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 16px;
+  width: 100px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea, #genre{
+  width: calc(100% - 120px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+textarea {
+  height: 100px;
+}
+
+.button-group {
+  text-align: right;
+}
+
+#cover {
+  display: inline;
+}
+
+input[type="reset"],
+input[type="submit"] {
+  background-color: #00303f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  border: 2px solid #00303F;
+}
+
+input[type="reset"]:hover,
+input[type="submit"]:hover {
+  background-color: #023f51;
+  background-color: #CAE4DB;
+  color: #00303F;
+}
+
+.heading {
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+}
+
+.small-input {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+.small-input .form-group{
+  flex-basis: calc(50% - 20px);
+}
+
+@media(max-width: 775px){
+  .small-input .form-group{
+    flex-basis: 100%;
+  }
+}
+
+.dark-mode {
+  background-color: #1a1a1a; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+
+.dark-mode main {
+  color: #ffffff;
+  background-color: #00363f;
+}
+
+.dark-mode .NavHome {
+  background-color: #000000; /* Dark background color for navigation */
+}
+
+.dark-mode .NavHome li:hover {
+  background-color: #666666; /* Darker hover color for navigation */
+}
+  </style>
+{% endblock %}

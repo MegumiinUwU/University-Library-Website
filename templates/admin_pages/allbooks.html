@@ -1,0 +1,363 @@
+{% extends 'admin_pages/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="book-heading">All Books</h1>
+<div class="quote"></div>
+
+{% if error_message %}
+    <div class="messages">
+        {% if error_message == "Book edited successfully!" %}
+            <div class="alert alert-success">{{ error_message }}</div>
+        {% else %}
+            <div class="alert alert-error">{{ error_message }}</div>
+        {% endif %}
+    </div>
+{% endif %}
+
+<!-- Display books -->
+<div class="books">
+    {% for book in page_obj %}
+    <div class="book">
+        <h2>Title: {{ book.name }}</h2>
+        <p>First Author: {{ book.first_author }}</p>
+        {% if book.second_author %}
+        <p>Second Author: {{ book.second_author }}</p>
+        {% endif %}
+        {% if book.third_author %}
+        <p>Third Author: {{ book.third_author }}</p>
+        {% endif %}
+        <p>ISBN: {{ book.isbn }}</p>
+        <p>Publish Year: {{ book.publish_year }}</p>
+        <p>Genre: {{ book.genre }}</p>
+        <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
+
+        <!-- Button for editing the book -->
+        <button type="button" class="button edit-button" data-book-id="{{ book.id }}">Edit Book</button>
+    </div>
+    {% empty %}
+    <p>No books found.</p>
+    {% endfor %}
+</div>
+
+<!-- Pagination links -->
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="{{ request.path }}?page=1" class="pagination-link">&laquo; First</a>
+    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}" class="pagination-link">&lt; Previous</a>
+    {% else %}
+    <span class="disabled-pagination-link">&laquo; First</span>
+    <span class="disabled-pagination-link">&lt; Previous</span>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <span class="current-page">{{ num }}</span>
+    {% else %}
+    <a href="{{ request.path }}?page={{ num }}" class="pagination-link">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}" class="pagination-link">Next &gt;</a>
+    <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="pagination-link">Last &raquo;</a>
+    {% else %}
+    <span class="disabled-pagination-link">Next &gt;</span>
+    <span class="disabled-pagination-link">Last &raquo;</span>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Edit Book Modal -->
+<div id="editBookModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Book</h2>
+        <form id="editBookForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="bookIdInput" name="book_id">
+            <label for="nameInput">Name:</label>
+            <input type="text" id="nameInput" name="name" required>
+            <!-- Add input fields for other book details -->
+            <button type="submit" class="button">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .book-cover {
+        width: 350px;
+        height: 350px;
+        object-fit: cover;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .book-image {
+        width: 350px;
+        height: 350px;
+        object-fit: cover;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .pagination-link {
+        margin: 0 5px;
+        text-decoration: none;
+        color: chocolate;
+    }
+
+    .current-page {
+        margin: 0 5px;
+        font-weight: bold;
+    }
+
+    .disabled-pagination-link {
+        margin: 0 5px;
+        color: #ccc;
+    }
+
+    .filter-form {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    #category {
+        padding: 10px;
+        border: 1px solid #00303f;
+        border-radius: 5px;
+        width: 60%;
+    }
+
+    #category::placeholder {
+        color: #00303f;
+    }
+
+    .filter-form button {
+        padding: 10px 20px;
+        background-color: #00303f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .filter-form button:hover {
+        background-color: #023f51;
+    }
+
+    .button-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .book-action-form {
+        display: inline-block;
+        margin: 5px;
+    }
+
+    .button {
+        padding: 15px 30px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        background-color: #218838;
+    }
+
+    .button:focus {
+        outline: none;
+    }
+
+    .messages {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        display: inline-block;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+
+    .alert-error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+
+    .blockquote {
+        font-size: 1.2em;
+        width: 60%;
+        margin: 20px auto;
+        font-family: 'Open Sans', sans-serif;
+        font-style: italic;
+        color: #555555;
+        padding: 1.2em 30px 1.2em 75px;
+        border-left: 8px solid #78C0A8;
+        line-height: 1.6;
+        position: relative;
+        background: #EDEDED;
+    }
+
+    .blockquote::before {
+        font-family: Arial;
+        content: "\201C";
+        color: #78C0A8;
+        font-size: 4em;
+        position: absolute;
+        left: 10px;
+        top: -10px;
+    }
+
+    .blockquote::after {
+        content: '';
+    }
+
+    .blockquote span {
+        display: block;
+        color: #333333;
+        font-style: normal;
+        font-weight: bold;
+        margin-top: 1em;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 5px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal form input {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .modal form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .modal form button:hover {
+        background-color: #218838;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Function to handle form submission
+    $('#editBookForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var formData = new FormData(this); // Create FormData object
+        $.ajax({
+            url: '/admin/edit-book/', // URL to submit the form data
+            type: 'POST', // HTTP method
+            data: formData, // Form data
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data.success) {
+                    alert('Book edited successfully!');
+                    location.reload(); // Reload the page to see updated book details
+                } else {
+                    alert('Error editing book.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+    $('.edit-button').on('click', function() {
+        var bookId = $(this).data('book-id'); // Get the book ID from the data attribute
+        // Send AJAX request to get book details
+        $.ajax({
+            url: '/get-book-details/?name=' + encodeURIComponent(bookId), // URL to fetch book details
+            success: function(data) {
+                // Populate the form fields with book details
+                $('#bookIdInput').val(data.book.id);
+                $('#nameInput').val(data.book.name);
+                // Populate other form fields with respective book details
+                // Show the edit book modal
+                $('#editBookModal').show();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+    // Function to close modal
+    $('.close').on('click', function() {
+        $('#editBookModal').hide(); // Hide the edit book modal
+    });
+
+    // Close modal when clicked outside
+    $(window).click(function(event) {
+        var modal = document.getElementById('editBookModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+</script>
+{% endblock content %}
