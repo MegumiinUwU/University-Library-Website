@@ -5,7 +5,9 @@
 
 
 {% block content %}
-<h1 class="search-heading">Library Catalog</h1>
+<div class="header-container">
+    <h1 class="search-heading">Library Catalog</h1>
+</div>
 
 <div class="search-container">
     <form method="post" action="{% url 'search2' %}" class="search-form">
@@ -20,16 +22,16 @@
         {% for book in results %}
         <div class="book" onclick="bookDetails('{{ book.name }}')">
                 <h2>{{ book.name }}</h2>
-                <p>First Author: {{ book.first_author }}</p>
+                <p><strong>First Author:</strong> {{ book.first_author }}</p>
                 {% if book.second_author %}
-                    <p>Second Author: {{ book.second_author }}</p>
+                <p><strong>Second Author:</strong> {{ book.second_author }}</p>
                 {% endif %}
                 {% if book.third_author %}
-                    <p>Third Author: {{ book.third_author }}</p>
+                <p><strong>Third Author:</strong> {{ book.third_author }}</p>
                 {% endif %}
-                <p>ISBN: {{ book.isbn }}</p>
-                <p>Publish Year: {{ book.publish_year }}</p>
-                <p>Genre: {{ book.genre }}</p>
+                <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                <p><strong>Publish Year:</strong> {{ book.publish_year }}</p>
+                <p><strong>Genre:</strong> {{ book.genre }}</p>
                 <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image ">
             </div>
         {% empty %}
@@ -41,6 +43,8 @@
     .search-container {
         text-align: center;
         margin-top: 20px;
+        margin-bottom: 40px;
+        gap: 40px;
     }
 
     .search-form input {
@@ -138,6 +142,26 @@
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.1); /* Fading shadow */
 }
 
+h2 {
+    text-align: center;
+}
+
+.header-container{
+    display: flex;
+    margin: 5px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-container {
+    margin-bottom: 40px;
+    gap: 40px;
+}
+
+.search-results {
+    margin-bottom: 40px;
+    gap: 40px;
+}
 </style>
 <script>
     function bookDetails(name) {

@@ -2,25 +2,27 @@
 {% load static %}
 
 {% block content %}
-<h1 class="search-heading">Inventory</h1>
+<div class="header-container">
+    <h1 class="search-heading">Inventory</h1>
+</div>
 
 <div class="search-results">
     {% if inventory %}
         {% for book in inventory %}
         <div class="book" onclick="bookDetails('{{ book.name }}')">
                 <h2>{{ book.name }}</h2>
-                <p>First Author: {{ book.first_author }}</p>
+                <p><strong>First Author:</strong> {{ book.first_author }}</p>
                 {% if book.second_author %}
-                    <p>Second Author: {{ book.second_author }}</p>
+                <p><strong>Second Author:</strong> {{ book.second_author }}</p>
                 {% endif %}
                 {% if book.third_author %}
-                    <p>Third Author: {{ book.third_author }}</p>
+                <p><strong>Third Author:</strong> {{ book.third_author }}</p>
                 {% endif %}
-                <p>ISBN: {{ book.isbn }}</p>
-                <p>Publish Year: {{ book.publish_year }}</p>
-                <p>Genre: {{ book.genre }}</p>
+                <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                <p><strong>Publish Year:</strong> {{ book.publish_year }}</p>
+                <p><strong>Genre:</strong> {{ book.genre }}</p>
                 <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-image">
-                <form method="post" action="{% url 'return_book' book.id %}">
+                <form method="post" action="{% url 'return_book' book.id %}" class = "button">
                     {% csrf_token %}
                     <button type="submit" class="return-button">Return Book</button>
                 </form>
@@ -112,6 +114,8 @@
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 20px;
+            margin-bottom: 40px;
+            gap: 40px;
         }
         .book{
             cursor: pointer; 
@@ -191,6 +195,22 @@
         }
         .return-button:hover {
             background-color: #c82333; /* Darker shade of red on hover */
+        }
+        h2 {
+            text-align: center;
+        }
+
+        .button{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-container{
+            display: flex;
+            margin: 5px;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
 {% endblock content %}

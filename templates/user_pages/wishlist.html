@@ -2,25 +2,27 @@
 {% load static %}
 
 {% block content %}
-<h1 class="search-heading">Wishlist</h1>
+<div class="header-container">
+    <h1 class="search-heading">Wishlist</h1>
+</div>
 
 <div class="search-results">
     {% if wishlist %}
         {% for item in wishlist %}
             <div class="book">
                 <h2>{{ item.name }}</h2>
-                <p>First Author: {{ item.first_author }}</p>
+                <p><strong>First Author:</strong> {{ item.first_author }}</p>
                 {% if item.second_author %}
-                    <p>Second Author: {{ item.second_author }}</p>
+                <p><strong>Second Author:</strong> {{ item.second_author }}</p>
                 {% endif %}
                 {% if item.third_author %}
-                    <p>Third Author: {{ item.third_author }}</p>
+                <p><strong>Third Author:</strong> {{ item.third_author }}</p>
                 {% endif %}
-                <p>ISBN: {{ item.isbn }}</p>
-                <p>Publish Year: {{ item.publish_year }}</p>
-                <p>Genre: {{ item.genre }}</p>
+                <p><strong>ISBN:</strong> {{ item.isbn }}</p>
+                <p><strong>Publish Year:</strong> {{ item.publish_year }}</p>
+                <p><strong>Genre:</strong> {{ item.genre }}</p>
                 <img src="{{ item.cover_image.url }}" alt="Book Cover" class="book-image">
-                <form method="post" action="{% url 'remove_from_wishlist' item.id %}">
+                <form method="post" action="{% url 'remove_from_wishlist' item.id %}" class = "button">
                     {% csrf_token %}
                     <button type="submit" class="remove-button">Remove from Wishlist</button>
                 </form>
@@ -39,6 +41,8 @@
         flex-wrap: wrap;
         justify-content: center;
         margin-top: 20px;
+        margin-bottom: 40px;
+        gap: 40px;
     }
     .book {
         border: 1px solid #ddd;
@@ -63,6 +67,22 @@
     }
     .remove-button:hover {
         background-color: #c82333; /* Darker shade of red on hover */
+    }
+    h2 {
+        text-align: center;
+    }
+
+    .button{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header-container{
+        display: flex;
+        margin: 5px;
+        flex-direction: column;
+        align-items: center;
     }
 </style>
 {% endblock content %}

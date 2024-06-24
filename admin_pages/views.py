@@ -41,7 +41,7 @@ def profile(request):
         if check_password(old_password,user.password):
             if new_password == confirm_password:
                 if new_password:
-                    user.set_password(new_password)
+                    user.password = make_password(new_password)
                 user.username = username
                 user.email =newemail
                 user.phone = phone_number

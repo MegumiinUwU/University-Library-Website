@@ -16,12 +16,12 @@
     <div class="book">
         <img src="{{ book.cover_image.url }}" alt="Book Cover">
         <div class="txt">
-            <h2>Title: {{ book.title }}</h2>
-            <p>Author: {{ book.author }}</p>
-            <h2>Title: {{ book.name }}</h2>
-            <p>Author: {{ book.first_author }}</p>
-            <p>Genre: {{ book.genre }}</p>
-            <p>Description: {{ book.description }}</p>
+            <h2><strong>Title:</strong> {{ book.title }}</h2>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <h2><strong>Title:</strong> {{ book.name }}</h2>
+            <p><strong>Author:</strong> {{ book.first_author }}</p>
+            <p><strong>Genre:</strong> {{ book.genre }}</p>
+            <p><strong>Description:</strong> {{ book.description }}</p>
         </div>
     </div>
     {% endfor %}
@@ -80,4 +80,14 @@
     }
 });
 </script>
+<style>  
+    h2 {
+    text-align: center;
+    }
+
+    .books{
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+</style>
 {% endblock %}
