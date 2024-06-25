@@ -50,3 +50,25 @@ Our University Library System is built with robust exception handling mechanisms
 ### Database
 - **SQLite**: The default database used for development purposes.
 
+## Gallery
+
+Here are some GIFs demonstrating the Style <u> (not the features) </u> of the University Library System:
+
+Search
+<img src="README IMAGES/SEARCH.gif" alt="Search for book" width="800px" />
+
+
+View Books
+<img src="README IMAGES/VIEW BOOKS.gif" alt="Search for book" width="800px" />
+
+Login
+<img src="README IMAGES/LOGIN.gif" alt="Search for book" width="800px" />
+
+Change Profile Picture
+<img src="README IMAGES/PROFILE.gif" alt="Search for book" width="800px" />
+
+Dark Mode
+<img src="README IMAGES/DARK MODE.gif" alt="Search for book" width="800px" />
+
+and more ...
+
